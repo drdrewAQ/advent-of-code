@@ -40,6 +40,8 @@ class InputTypes(Enum):
     STRSPLIT = auto()
     # int[], split by a split by a specified separator (default newline)
     INTSPLIT = auto()
+    # str[][], split by newline then empty space
+    GRID = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -52,7 +54,7 @@ def print_answer(i: int, ans: ResultType):
         print(f"=== {ans}")
 
 
-InputType = Union[str, int, list[int], list[str], list[list[int]]]
+InputType = Union[str, int, list[int], list[str], list[list[int]], list[list[str]]]
 I = TypeVar("I", bound=InputType)
 
 
@@ -142,12 +144,15 @@ class BaseSolution(Generic[I]):
         if (
             self.input_type is InputTypes.STRSPLIT
             or self.input_type is InputTypes.INTSPLIT
+            or self.input_type is InputTypes.GRID
         ):
             # default to newlines
             parts = data.split(self.separator)
 
             if self.input_type == InputTypes.INTSPLIT:
                 return [int(i) for i in parts]
+            if self.input_type == InputTypes.GRID:
+                return [[c for c in s] for s in parts]
 
             return parts
 
@@ -215,6 +220,15 @@ class IntSplitSolution(BaseSolution[list[int]]):
     """
 
     input_type = InputTypes.INTSPLIT
+
+
+class GridSolution(BaseSolution[list[list[str]]]):
+    """
+    input is a grid, split by a specified separator (default newline, then ''); specify self.separator to tweak
+    """
+
+    input_type = InputTypes.GRID
+
 
 
 # https://stackoverflow.com/a/65681955/1825390

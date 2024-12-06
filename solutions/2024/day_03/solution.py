@@ -33,9 +33,11 @@ class Solution(TextSolution):
 
         for c in chunks:
             toggle = re.split(do, c, maxsplit=1)
-            if len(toggle) > 1:
-                for m in re.finditer(mul, toggle[1]):
-                    sum += int(m.group(1)) * int(m.group(2))
+            if len(toggle) == 1:
+                continue
+
+            for m in re.finditer(mul, toggle[1]):
+                sum += int(m.group(1)) * int(m.group(2))
 
         return sum
 
