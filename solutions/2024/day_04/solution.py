@@ -35,7 +35,8 @@ class Solution(StrSplitSolution):
     def part_1(self) -> int:
         w = len(self.input[0]) - 1
         h = len(self.input) - 1
-        count = 0
+        found = set()
+        # count = 0
         for i, row in enumerate(self.input):
             for j, col in enumerate(row):
                 # if col != 'X':
@@ -45,24 +46,16 @@ class Solution(StrSplitSolution):
                 for i_mod, j_mod in mods:
                     i_tail = i + i_mod * 3
                     j_tail = j + j_mod * 3
-                    if i_tail > h or j_tail > w:
+                    if i_tail < 0 or j_tail < 0 or i_tail > h or j_tail > w:
                         continue
                     if self.input[i][j] == 'X' and self.input[i+i_mod][j+j_mod] == 'M' and self.input[i+2*i_mod][j+2*j_mod] == 'A' and self.input[i_tail][j_tail] == 'S':
-                        count += 1
-                        print(f'({count}) at {i}, {j}')
+                        # count += 1
+                        found.add(f'{i},{j}-{i_tail},{j_tail}')
+                        # print(f'({count}) at {i}, {j}')
                     elif self.input[i][j] == 'S' and self.input[i+i_mod][j+j_mod] == 'A' and self.input[i+2*i_mod][j+2*j_mod] == 'M' and self.input[i_tail][j_tail] == 'X':
-                        count += 1
-                        print(f'({count}) at {i}, {j}')
-
-                # for i_mod in range(-1, 2):
-                #     for j_mod in range(-1, 2):
-                #         i_tail = i + i_mod * 3
-                #         j_tail = j + j_mod * 3
-                #         if i_tail < 0 or j_tail < 0 or i_tail > h or j_tail > w:
-                #             continue
-                #         if self.input[i+i_mod][j+j_mod] == 'M' and self.input[i+2*i_mod][j+2*j_mod] == 'A' and self.input[i_tail][j_tail] == 'S':
-                #             count += 1
-        return count
+                        # count += 1
+                        found.add(f'{i_tail},{j_tail}-{i},{j}')
+        return len(found)
 
 
     @answer(1871)
