@@ -26,17 +26,19 @@ class Solution(StrSplitSolution):
                 else:
                     prev_outputs = [k for k in outputs.keys() if len(k) == i]
                     for po in prev_outputs:
-                        outputs[f'{po}+'] = outputs[po] + v
-                        outputs[f'{po}*'] = outputs[po] * v
+                        if outputs[po] + v <= result:
+                            outputs[f'{po}+'] = outputs[po] + v
+                        if outputs[po] * v <= result:
+                            outputs[f'{po}*'] = outputs[po] * v
 
-            final_outputs = {k: outputs[k] for k in outputs.keys() if len(k) == len(values)}
-            if result in final_outputs.values():
+            final_outputs = [outputs[k] for k in outputs.keys() if len(k) == len(values)]
+            if result in final_outputs:
                 sum += result
         return sum
 
 
 
-    # @answer(227615740238334)
+    @answer(227615740238334)
     def part_2(self) -> int:
         sum = 0
         for string in self.input:
@@ -54,12 +56,16 @@ class Solution(StrSplitSolution):
                 else:
                     prev_outputs = [k for k in outputs.keys() if len(k) == i]
                     for po in prev_outputs:
-                        outputs[f'{po}+'] = outputs[po] + v
-                        outputs[f'{po}*'] = outputs[po] * v
-                        outputs[f'{po}c'] = int(f'{outputs[po]}{v}')
+                        if outputs[po] + v <= result:
+                            outputs[f'{po}+'] = outputs[po] + v
+                        if outputs[po] * v <= result:
+                            outputs[f'{po}*'] = outputs[po] * v
+                        c = int(f'{outputs[po]}{v}')
+                        if c <= result:
+                            outputs[f'{po}c'] = c
 
-            final_outputs = {k: outputs[k] for k in outputs.keys() if len(k) == len(values)}
-            if result in final_outputs.values():
+            final_outputs = [outputs[k] for k in outputs.keys() if len(k) == len(values)]
+            if result in final_outputs:
                 sum += result
         return sum
 
