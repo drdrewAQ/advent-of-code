@@ -36,7 +36,7 @@ class Solution(StrSplitSolution):
 
 
 
-    # @answer(1234)
+    # @answer(227615740238334)
     def part_2(self) -> int:
         sum = 0
         for string in self.input:
