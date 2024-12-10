@@ -42,6 +42,8 @@ class InputTypes(Enum):
     INTSPLIT = auto()
     # str[][], split by newline then empty space
     GRID = auto()
+    # int[][], split by newline then empty space
+    INTGRID = auto()
 
 
 # almost always int, but occasionally str; None is fine to disable a part
@@ -145,6 +147,7 @@ class BaseSolution(Generic[I]):
             self.input_type is InputTypes.STRSPLIT
             or self.input_type is InputTypes.INTSPLIT
             or self.input_type is InputTypes.GRID
+            or self.input_type is InputTypes.INTGRID
         ):
             # default to newlines
             parts = data.split(self.separator)
@@ -153,6 +156,8 @@ class BaseSolution(Generic[I]):
                 return [int(i) for i in parts]
             if self.input_type == InputTypes.GRID:
                 return [[c for c in s] for s in parts]
+            if self.input_type == InputTypes.INTGRID:
+                return [[int(c) for c in s] for s in parts]
 
             return parts
 
@@ -224,10 +229,18 @@ class IntSplitSolution(BaseSolution[list[int]]):
 
 class GridSolution(BaseSolution[list[list[str]]]):
     """
-    input is a grid, split by a specified separator (default newline, then ''); specify self.separator to tweak
+    input is a grid of characters, split by a specified separator (default newline, then ''); specify self.separator to tweak
     """
 
     input_type = InputTypes.GRID
+
+
+class IntGridSolution(BaseSolution[list[list[int]]]):
+    """
+    input is a grid of integers, split by a specified separator (default newline, then ''); specify self.separator to tweak
+    """
+
+    input_type = InputTypes.INTGRID
 
 
 
