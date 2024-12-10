@@ -13,10 +13,10 @@ class Solution(TextSolution):
     @answer(6395800119709)
     def part_1(self) -> int:
         file = True
-        idx = 0
-        total = 0
-        disk = []
-        empty_idx = []
+        idx = 0             # tracking file_id
+        total = 0           # total size of all file blocks
+        disk = []           # will be similar to example (None instead of '.')
+        empty_idx = []      # indices for the start of each empty block
         pre = [int(c) for c in self.input]
         for size in pre:
             fill = None
@@ -25,11 +25,13 @@ class Solution(TextSolution):
                 fill = idx
                 idx += 1
             elif size:
+                # not a file, but having size > 0, so record our current position
                 empty_idx.append(len(disk))
             for _ in range(size):
                 disk.append(fill)
             file = not file
 
+        # start moving end blocks into empty block spaces
         empty_ptr = empty_idx.pop(0)
         while len(disk) > total:
             last = disk.pop()
@@ -50,45 +52,49 @@ class Solution(TextSolution):
     @answer(6418529470362)
     def part_2(self) -> int:
         file = True
-        pos = 0
-        idx = 0
-        disk = {}               # maps file id to position
-        files = {}              # maps file position to size 
-        empty = {}              # maps empty position to size
+        pos = 0                 # record total length as we abandon 'disk'
+        idx = 0                 # track file_id
+        file_position = {}      # maps file id to position
+        filesize_at = {}        # maps file position to size 
+        emptyspace_at = {}      # maps empty position to size
         pre = [int(c) for c in self.input]
         for size in pre:
             if file:
-                disk[idx] = pos
-                files[pos] = size
+                file_position[idx] = pos
+                filesize_at[pos] = size
                 idx += 1
             elif size:
-                empty[pos] = size
+                emptyspace_at[pos] = size
             file = not file
             pos += size
 
         # count backwards through the file indices
-        for f_i in sorted(disk.keys(), reverse=True):
-            f_p = disk[f_i]
-            f_s = files[f_p]
-            for e_p in sorted(empty):
+        for file_id in sorted(file_position.keys(), reverse=True):
+            file_location = file_position[file_id]
+            file_size = filesize_at[file_location]
+            for empty_location in sorted(emptyspace_at):
                 # only move to lower indices                 
-                if e_p > f_p:
+                if empty_location > file_location:
                     break
-                e_s = empty[e_p]
-                if e_s >= f_s:
-                    del files[f_p]
-                    files[e_p] = f_s
-                    del empty[e_p]
-                    if (e_r := e_s - f_s):
-                        empty[e_p+f_s] = e_r
-                    disk[f_i] = e_p
+                # is the empty space large enough?
+                empty_size = emptyspace_at[empty_location]
+                if empty_size >= file_size:
+                    # update the location of this file_id
+                    file_position[file_id] = empty_location
+                    # relocate this file_id's file_size
+                    del filesize_at[file_location]
+                    filesize_at[empty_location] = file_size
+                    # resize emptyspace and relocate if space remaining
+                    del emptyspace_at[empty_location]
+                    if (empty_remaining := empty_size - file_size):
+                        emptyspace_at[empty_location+file_size] = empty_remaining
                     break
 
         result = 0
-        for f_i, f_p in disk.items():
-            f_s = files[f_p]
-            for i in range(f_s):
-                result += f_i * (f_p + i)
+        for file_id, file_location in file_position.items():
+            file_size = filesize_at[file_location]
+            for i in range(file_size):
+                result += file_id * (file_location + i)
 
         return result
 
