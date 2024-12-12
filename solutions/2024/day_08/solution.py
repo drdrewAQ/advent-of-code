@@ -3,6 +3,7 @@
 # puzzle prompt: https://adventofcode.com/2024/day/8
 
 from ...base import GridSolution, answer
+from ...utils.grid import add_points, subtract_points
 
 
 class Solution(GridSolution):
@@ -11,86 +12,49 @@ class Solution(GridSolution):
 
     @answer(247)
     def part_1(self) -> int:
-        h = len(self.input) - 1
-        w = len(self.input[0]) - 1
-
         antennas = {}
         antinodes = set()
-        for i, r in enumerate(self.input):
-            for j, c in enumerate(r):
-                if c != '.':
-                    antennas.setdefault(c, set()).add(tuple([i,j]))
+        for loc, c in self.input.items():
+            if c != '.':
+                antennas.setdefault(c, set()).add(loc)
 
         for nodes in antennas.values():
             node1 = nodes.pop()
             while nodes:
                 for node2 in nodes:
-                    i_1 = node1[0]
-                    j_1 = node1[1]
-                    i_2 = node2[0]
-                    j_2 = node2[1]
-                    delta_i = i_2 - i_1
-                    delta_j = j_2 - j_1
-                    assert(delta_i != 0 or delta_j != 0)
+                    delta = subtract_points(node2, node1)
+                    assert(delta[0] != 0 or delta[1] != 0)
 
-                    # check 'below' node1
-                    anti_i = i_1 - delta_i
-                    anti_j = j_1 - delta_j
-                    if not (anti_i < 0 or anti_j < 0 or anti_i > h or anti_j > w):
-                        antinodes.add(f'{anti_i},{anti_j}')
+                    for anti in subtract_points(node1, delta), add_points(node2, delta):
+                        if anti in self.input:
+                            antinodes.add(anti)
                     
-                    # check 'above' node2
-                    anti_i = i_2 + delta_i
-                    anti_j = j_2 + delta_j
-                    if not (anti_i < 0 or anti_j < 0 or anti_i > h or anti_j > w):
-                        antinodes.add(f'{anti_i},{anti_j}')
                 node1 = nodes.pop()
         return len(antinodes)
 
 
     @answer(861)
     def part_2(self) -> int:
-        h = len(self.input) - 1
-        w = len(self.input[0]) - 1
         antennas = {}
         antinodes = set()
-        for i, r in enumerate(self.input):
-            for j, c in enumerate(r):
-                if c != '.':
-                    antennas.setdefault(c, set()).add(tuple([i,j]))
+        for loc, c in self.input.items():
+            if c != '.':
+                antennas.setdefault(c, set()).add(loc)
 
         for nodes in antennas.values():
             node1 = nodes.pop()
-            # only if there are at least two nodes of the same frequency
-            if nodes:
-                antinodes.add(f'{node1[0]},{node1[1]}')
             while nodes:
                 for node2 in nodes:
-                    i_1 = node1[0]
-                    j_1 = node1[1]
-                    i_2 = node2[0]
-                    j_2 = node2[1]
-                    delta_i = i_2 - i_1
-                    delta_j = j_2 - j_1
-                    assert(delta_i != 0 or delta_j != 0)
+                    delta = subtract_points(node2, node1)
+                    assert(delta[0] != 0 or delta[1] != 0)
 
-                    # check 'below' node1
-                    anti_i = i_1 - delta_i
-                    anti_j = j_1 - delta_j
-                    while not (anti_i < 0 or anti_j < 0 or anti_i > h or anti_j > w):
-                        antinodes.add(f'{anti_i},{anti_j}')
-                        anti_i -= delta_i
-                        anti_j -= delta_j
-                    
-                    # check 'above' node2
-                    anti_i = i_2 + delta_i
-                    anti_j = j_2 + delta_j
-                    while not (anti_i < 0 or anti_j < 0 or anti_i > h or anti_j > w):
-                        antinodes.add(f'{anti_i},{anti_j}')
-                        anti_i += delta_i
-                        anti_j += delta_j
+                    for anti, fn in (node2, add_points), (node1, subtract_points):
+                        antinodes.add(anti)
+                        while (next_anti := fn(anti, delta)) in self.input:
+                            antinodes.add(next_anti)
+                            anti = next_anti
+
                 node1 = nodes.pop()
-                antinodes.add(f'{node1[0]},{node1[1]}')
 
         return len(antinodes)
 

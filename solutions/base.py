@@ -23,6 +23,7 @@ from typing import (
     final,
     overload,
 )
+from .utils.grid import IntGrid, StrGrid, parse_grid
 
 
 class AoCException(Exception):
@@ -56,7 +57,7 @@ def print_answer(i: int, ans: ResultType):
         print(f"=== {ans}")
 
 
-InputType = Union[str, int, list[int], list[str], list[list[int]], list[list[str]]]
+InputType = Union[str, int, list[int], list[str], list[list[int]], list[list[str]], IntGrid, StrGrid]
 I = TypeVar("I", bound=InputType)
 
 
@@ -155,9 +156,9 @@ class BaseSolution(Generic[I]):
             if self.input_type == InputTypes.INTSPLIT:
                 return [int(i) for i in parts]
             if self.input_type == InputTypes.GRID:
-                return [[c for c in s] for s in parts]
+                return parse_grid(parts)   #[[c for c in s] for s in parts]
             if self.input_type == InputTypes.INTGRID:
-                return [[int(c) for c in s] for s in parts]
+                return parse_grid(parts, int_values=True) # [[int(c) for c in s] for s in parts]
 
             return parts
 
@@ -227,7 +228,7 @@ class IntSplitSolution(BaseSolution[list[int]]):
     input_type = InputTypes.INTSPLIT
 
 
-class GridSolution(BaseSolution[list[list[str]]]):
+class GridSolution(BaseSolution[StrGrid]):
     """
     input is a grid of characters, split by a specified separator (default newline, then ''); specify self.separator to tweak
     """
@@ -235,7 +236,7 @@ class GridSolution(BaseSolution[list[list[str]]]):
     input_type = InputTypes.GRID
 
 
-class IntGridSolution(BaseSolution[list[list[int]]]):
+class IntGridSolution(BaseSolution[IntGrid]):
     """
     input is a grid of integers, split by a specified separator (default newline, then ''); specify self.separator to tweak
     """

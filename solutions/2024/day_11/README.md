@@ -1,10 +1,9 @@
 # Day 11 (2024)
 
-`TITLE` ([prompt](https://adventofcode.com/2024/day/11))
+`Plutonian Pebbles` ([prompt](https://adventofcode.com/2024/day/11))
 
-Use this space for notes on the day's solution and to document what you've learned!
+## Timing
 
-## Part 1
+== Performance
 
-## Part 2
-
+=== Both parts ran in 0.054s

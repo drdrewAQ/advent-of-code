@@ -3,6 +3,8 @@
 # puzzle prompt: https://adventofcode.com/2024/day/10
 
 from collections import Counter
+
+from solutions.utils.grid import add_points
 from ...base import IntGridSolution, answer
 
 
@@ -12,29 +14,17 @@ class Solution(IntGridSolution):
 
     # path is just for debugging, returns counter keyed by summits with rating values
     def look_around(self, location, path):
-        i = location[0]
-        j = location[1]
-        c = self.input[i][j]
-        if c == 9:
+        elevation = self.input[location]
+        if elevation == 9:
             # self.debug(path)
             return Counter({location: 1})
 
-        h = len(self.input) - 1
-        w = len(self.input[0]) - 1
         ratings = Counter()
-        for delta_i, delta_j in [[0,1],[1,0],[0,-1],[-1,0]]:
-            # don't leave the map, natch
-            next_i = i + delta_i
-            if next_i < 0 or next_i > h:
-                continue
-
-            next_j = j + delta_j
-            if next_j < 0 or next_j > w:
-                continue
-
+        for direction in tuple([0,1]), tuple([1,0]), tuple([0,-1]), tuple([-1,0]):
             # see if we can keep climbing
-            step = tuple([next_i, next_j])
-            if self.input[next_i][next_j] == c+1:
+            step = add_points(location, direction)
+            # don't leave the map, natch
+            if step in self.input and self.input[step] == elevation + 1:
                 fork = path.copy()
                 fork.append(step)
                 summits = self.look_around(step, fork)
@@ -46,10 +36,9 @@ class Solution(IntGridSolution):
     def part_1(self) -> int:
         trailheads = set()
         # find trailheads
-        for i, row in enumerate(self.input):
-            for j, c in enumerate(row):
-                if c == 0:
-                    trailheads.add(tuple([i,j]))
+        for loc, elevation in self.input.items():
+            if elevation == 0:
+                trailheads.add(loc)
         self.debug(len(trailheads), trailheads)
         
         total_score = 0
@@ -65,10 +54,9 @@ class Solution(IntGridSolution):
     def part_2(self) -> int:
         trailheads = set()
         # find trailheads
-        for i, row in enumerate(self.input):
-            for j, c in enumerate(row):
-                if c == 0:
-                    trailheads.add(tuple([i,j]))
+        for loc, elevation in self.input.items():
+            if elevation == 0:
+                trailheads.add(loc)
         self.debug(len(trailheads), trailheads)
         
         total_score = 0

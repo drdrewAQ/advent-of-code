@@ -1,19 +1,22 @@
-# @xavdid's Python Advent of Code Project Template
+# Based on @xavdid's Python Advent of Code Project Template
 
-This is my tried-and-true Python utility package for the phenomenal [Advent of Code](https://adventofcode.com/) puzzles. It handles creating stub solutions, input parsing, and printing your answer, letting you focus on the actual solve. I've been [using it since 2017](https://github.com/xavdid/advent-of-code). It doesn't do _too_ much though- it doesn't pull or submit your input automatically, so no auth is required.
+## Results
 
-Additionally, Over in the main repo, I include a step-by-step [explanation of each puzzle](https://advent-of-code.xavd.id/) if you're in the learning mood!
+### 2024
 
-## Quickstart
-
-To use this base class for your own solutions:
-
-1. Ensure you have Python `3.12` or higher. You can use [mise](https://mise.jdx.dev/) or [pyenv](https://github.com/pyenv/pyenv) to manage your Python versions. It may work on older versions, but `3.12`-specific features will be added without further breaking changes
-2. Create a new repo using this template ([docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template#creating-a-repository-from-a-template)) and clone it locally
-3. Start a new solution using `./start`
-4. Edit the newly created file at `solutions/YEAR/day_01/solution.py`
-5. Run your code answers using `./advent`
-6. Repeat and enjoy!
+| Day | Total Time (parts 1 & 2)|
+|-----|------------|
+|  01 |   0.001s   |
+|  02 |   0.002s   |
+|  03 |   0.001s   |
+|  04 |   0.011s   |
+|  05 |   0.023s   |
+|  06 |   1.262s   |
+|  07 |   0.966s   |
+|  08 |   0.001s   |
+|  09 |   0.457s   |
+|  10 |   0.020s   |
+|  11 |   0.054s   |
 
 ## Commands
 
@@ -125,6 +128,9 @@ AoC input takes a number of forms, so there are a number of simple modes for inp
 | `TextSolution`                   | one solid block of text                                   | `abcde`                    |
 | `IntSplitSolution`               | `int[]`, split by a specified separator (default newline) | 1<br>2<br>3<br>4<br>5      |
 | `IntSolution`                    | one number                                                | `12345`                    |
+| `GridSolution`                   | `dict[tuple[int,int], str]` mapping `i,j` to a character  | `ab`<br>`cd`               |
+| `IntGridSolution`                | same as `GridSolution`, but with `int` instead of `str`   | `12`<br>`34`               |
+
 
 ```py
 # input file is "12345"
