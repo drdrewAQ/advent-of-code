@@ -46,3 +46,10 @@ def subtract_points(a: GridPoint, b: GridPoint) -> GridPoint:
     returns `a - b` for 2-tuples.
     """
     return a[0] - b[0], a[1] - b[1]
+
+def taxi_distance(a: GridPoint, b: GridPoint) -> int:
+    """
+    taxicab distance from a to b
+    """
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
